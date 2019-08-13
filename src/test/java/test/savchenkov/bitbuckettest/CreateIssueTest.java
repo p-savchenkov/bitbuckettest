@@ -36,13 +36,27 @@ public class CreateIssueTest {
     deleteIssue(issue);
   }
 
+  @Test
+  public void shouldSeeCreatedIssueTitle() {
+    String url = String.format(
+        "https://bitbucket.org/%s/%s/issues/%s",
+        cfg.userName(),
+        cfg.repo(),
+        issue.getId()
+    );
+
+    driver.get(url);
+    WebElement issueTitle = driver.findElement(By.xpath("//*[@id=\"issue-title\"]"));
+    assertThat(issueTitle.getText(), equalTo(issue.getTitle()));
+  }
+
   private Issue createIssue(String title) {
     issue = new Issue(title);
     issue.setTitle(title);
 
     ResponseBody response = given()
         .auth().basic(cfg.userName(), cfg.password())
-        .header("Content-Type", " application/json")
+        .header("Content-Type", "application/json")
         .baseUri(cfg.apiHost())
         .body(issue)
         .when()
@@ -73,19 +87,5 @@ public class CreateIssueTest {
         )
         .then()
         .statusCode(204);
-  }
-
-  @Test
-  public void shouldSeeCreatedIssueTitle() {
-    String url = String.format(
-        "https://bitbucket.org/%s/%s/issues/%s",
-        cfg.userName(),
-        cfg.repo(),
-        issue.getId()
-    );
-
-    driver.get(url);
-    WebElement issueTitle = driver.findElement(By.xpath("//*[@id=\"issue-title\"]"));
-    assertThat(issueTitle.getText(), equalTo(issue.getTitle()));
   }
 }

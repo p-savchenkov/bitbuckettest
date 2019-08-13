@@ -6,7 +6,7 @@ public class Issue {
   private String title;
   private String id;
 
-  public  Issue(String title){
+  public Issue(String title) {
     this.title = title;
   }
 
